@@ -25,6 +25,7 @@ The following **stretch** features are implemented:
 The following **additional** features are implemented:
 
 * [x] Allow users to see and select similar movies in the details view.
+* [x] Apply scrollability on the details view, in case the content overflows the screen view.
 
 ## Video Walkthrough
 
