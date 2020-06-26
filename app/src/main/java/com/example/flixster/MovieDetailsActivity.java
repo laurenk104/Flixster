@@ -2,13 +2,16 @@ package com.example.flixster;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.adapters.MovieAdapter;
 import com.example.flixster.adapters.SimilarAdapter;
@@ -39,15 +42,20 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
     TextView tvOverview;
     RatingBar rbVoteAverage;
 
+    AsyncHttpClient client;
+
     YouTubePlayerView player;
     String ytKey;
 
     RatingBar myRating;
+    Float currentRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        client = new AsyncHttpClient();
 
         // Adds the movie title, overview, and rating to the view
         addBasicInfo();
@@ -55,20 +63,71 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         setYtKey();
         // Displays movies similar to the current movie
         similarMovies();
-        //
-        makeRating();
+        // Gets the user's personal rating, if it exists, to display
+        // and submits a new rating if the user changes it
+        setRating();
     }
 
     public void makeRating() {
-        String ratingUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/rating?api_key=" + API_KEY + "&session_id=" + SESSION_ID;
-
         myRating = (RatingBar) findViewById(R.id.myRating);
 
-        float rating = myRating.getRating();
-        Log.d("rating", "Rating is: "+rating);
+        myRating.setRating(currentRating);
 
-        float voteAverage = movie.getVoteAverage().floatValue();
-        myRating.setRating(voteAverage = voteAverage > 0 ? voteAverage / 2.0f : voteAverage);
+        myRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                float rating = myRating.getRating();
+                currentRating = rating;
+                sendRating();
+            }
+        });
+    }
+
+    private void setRating() {
+        currentRating = (float) 0;
+        String getRating = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/account_states?api_key=" + API_KEY + "&session_id=" + SESSION_ID;
+        client.get(getRating, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.d("Rating", "onSuccess");
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONObject results = jsonObject.getJSONObject("rated");
+                    double rating = results.getDouble("value") / 2;
+                    currentRating = (float) rating;
+                    makeRating();
+                } catch (JSONException e) {
+                    // make rating with current rating set to 0, since is no data to get
+                    makeRating();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("Rating", "onFailure");
+            }
+        });
+    }
+
+    private void sendRating() {
+        String ratingUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/rating?api_key=" + API_KEY + "&session_id=" + SESSION_ID;
+
+        final RequestParams params = new RequestParams();
+        float sendRate = currentRating * 2;
+        params.put("value", (int) sendRate);
+        client.post(ratingUrl, params, "", new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.d("Rating", "onSuccess");
+                Toast.makeText(getApplicationContext(), "Rating made", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("Rating", "onFailure");
+                Log.d("Rating", statusCode + ": " + response);
+            }
+        });
     }
 
     public void similarMovies() {
@@ -81,7 +140,6 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         rvSimilar.setAdapter(similarAdapter);
         rvSimilar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        AsyncHttpClient client = new AsyncHttpClient();
         client.get(similarUrl, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -130,7 +188,6 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         ytKey = "5BZLz21ZS_Y";
         String trailersUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/trailers?api_key=" + API_KEY;
 
-        AsyncHttpClient client = new AsyncHttpClient();
         client.get(trailersUrl, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
