@@ -31,6 +31,7 @@ import okhttp3.Headers;
 public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     public static final String API_KEY = "62619cea068f3b73089089ab88d78890";
+    public static final String SESSION_ID = "b39aeb072fcc4e4aa1493f921014270fe1cdac21";
 
     Movie movie;
 
@@ -41,6 +42,8 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
     YouTubePlayerView player;
     String ytKey;
 
+    RatingBar myRating;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +53,22 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         addBasicInfo();
         // Sets the Youtube video key based on the movie and loads the proper trailer into the view
         setYtKey();
-
+        // Displays movies similar to the current movie
         similarMovies();
+        //
+        makeRating();
+    }
+
+    public void makeRating() {
+        String ratingUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/rating?api_key=" + API_KEY + "&session_id=" + SESSION_ID;
+
+        myRating = (RatingBar) findViewById(R.id.myRating);
+
+        float rating = myRating.getRating();
+        Log.d("rating", "Rating is: "+rating);
+
+        float voteAverage = movie.getVoteAverage().floatValue();
+        myRating.setRating(voteAverage = voteAverage > 0 ? voteAverage / 2.0f : voteAverage);
     }
 
     public void similarMovies() {

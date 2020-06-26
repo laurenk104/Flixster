@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MovieDetailsActivity">
+    tools:context=".MovieDetailsActivity"
+    android:overScrollMode="ifContentScrolls"
+    android:scrollbarStyle="insideOverlay"
+    android:scrollbars="vertical">
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvOverview"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:text="My Rating"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/player"
@@ -24,7 +48,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:text="Movie Title"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
     <TextView
         android:id="@+id/tvOverview"
@@ -54,24 +78,42 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSimilar"
-        android:layout_width="364dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvRatings"
+        android:layout_below="@+id/tvSimilar"
         android:layout_alignParentStart="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:orientation="horizontal"
         android:scrollbars="horizontal" />
 
     <TextView
-        android:id="@+id/tvRatings"
+        android:id="@+id/tvSimilar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvOverview"
+        android:layout_below="@+id/myRating"
         android:layout_alignParentStart="true"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
         android:text="Similar Movies"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <RatingBar
+        android:id="@+id/myRating"
+        style="@style/Widget.AppCompat.RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRating"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="3dp"
+        android:numStars="5"
+        android:stepSize="0.5" />
+
+</RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
