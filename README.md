@@ -26,6 +26,7 @@ The following **additional** features are implemented:
 
 * [x] Allow users to see and select similar movies in the details view.
 * [x] Apply scrollability on the details view, in case the content overflows the screen view.
+* [x] Let users make ratings directly to the database.
 
 ## Video Walkthrough
 
