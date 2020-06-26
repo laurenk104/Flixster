@@ -98,6 +98,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         player.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+
                 youTubePlayer.cueVideo(ytKey);
             }
 
