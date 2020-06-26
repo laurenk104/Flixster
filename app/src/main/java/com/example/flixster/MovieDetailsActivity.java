@@ -5,8 +5,13 @@ import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.flixster.adapters.MovieAdapter;
+import com.example.flixster.adapters.SimilarAdapter;
 import com.example.flixster.models.Movie;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -17,6 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Headers;
 
@@ -42,6 +50,43 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         addBasicInfo();
         // Sets the Youtube video key based on the movie and loads the proper trailer into the view
         setYtKey();
+
+        similarMovies();
+    }
+
+    public void similarMovies() {
+        String similarUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/similar?api_key=" + API_KEY;
+
+        RecyclerView rvSimilar = findViewById(R.id.rvSimilar);
+        final List<Movie>  similar = new ArrayList<>();
+
+        final SimilarAdapter similarAdapter = new SimilarAdapter(this, similar);
+        rvSimilar.setAdapter(similarAdapter);
+        rvSimilar.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(similarUrl, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.d("Similar", "onSuccess");
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONArray results = jsonObject.getJSONArray("results");
+                    Log.i("Similar", "Results: " + results.toString());
+                    similar.addAll(Movie.fromJsonArray(results));
+                    similarAdapter.notifyDataSetChanged();
+                    Log.i("Similar", "Similar movies: " + similar.size());
+                } catch (JSONException e) {
+                    Log.e("Similar", "Hit json exception", e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d("Similar", "onFailure");
+            }
+        });
     }
 
     public void addBasicInfo() {
