@@ -78,11 +78,12 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 float rating = myRating.getRating();
                 currentRating = rating;
+                // Update the rating in the database
                 sendRating();
             }
         });
     }
-
+    
     private void setRating() {
         currentRating = (float) 0;
         String getRating = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/account_states?api_key=" + API_KEY + "&session_id=" + SESSION_ID;
@@ -95,6 +96,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
                     JSONObject results = jsonObject.getJSONObject("rated");
                     double rating = results.getDouble("value") / 2;
                     currentRating = (float) rating;
+                    // Display the rating
                     makeRating();
                 } catch (JSONException e) {
                     // make rating with current rating set to 0, since is no data to get
@@ -125,7 +127,6 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d("Rating", "onFailure");
-                Log.d("Rating", statusCode + ": " + response);
             }
         });
     }
