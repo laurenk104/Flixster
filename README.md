@@ -2,7 +2,7 @@
 
 **Flixster** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
 
-Time spent: **X** hours spent in total
+Time spent: **16** hours spent in total
 
 ## User Stories
 
@@ -32,13 +32,24 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='img/movies_scroll.gif' title='main view' width='' alt='scrolling through current movies' />
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
+<img src='img/movie_play.gif' title='playing a trailer' width='' alt='playing a trailer' />
+
+<img src='img/similar_movies.gif' title='similar movies' width='' alt='viewing similar movies' />
+
+<img src='img/ratings.gif' title='rating a movie' width='' alt='rating a movie' />
+This rating bar is connected to the user's TMDb account, so any changes in the app are reflected in the database as well.
+Ratings can either be added (like Descendants), or updated (like Onward).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+I'm not entirely sure if I executed the YouTube player the way I was supposed to. I don't know if the video was supposed to play automatically, or if it
+should force the player into fullscreen mode, but I hope what I did was okay. Also, I noticed that a "trailers" endpoint existed, so I hope it's okay that I
+used that instead of the "movies" endpoint. The trailers endpoint was organized by the video platform, so it was easy to garauntee that I was using a YouTube
+video.
+
+And after writing this I realize that I really should've just asked, but I didn't and know I know what I should do for the next project!
 
 ## Open-source libraries used
 
